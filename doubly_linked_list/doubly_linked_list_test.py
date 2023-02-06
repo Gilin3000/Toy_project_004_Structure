@@ -1,5 +1,5 @@
 from enum import Enum
-from doubly_linked_list import LinkedList
+from doubly_linked_list import double_LinkedList
 
 Menu = Enum('Menu',
             ['len', 'check', 'insert', 'delete',
@@ -13,7 +13,7 @@ def select_menu() -> Menu:
         if 1 <= n <= len(Menu):
             return Menu(n)
         
-lst = LinkedList()
+lst = double_LinkedList()
 
 while True:
     menu = select_menu()
@@ -37,7 +37,8 @@ while True:
     elif menu == Menu.clear:
         lst.clear()
     elif menu == Menu.scan:
-        lst.scan()
+        for e in lst:
+            print(e)
     else:
         break
     

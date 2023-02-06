@@ -7,7 +7,7 @@ class Node:
         self.prev = prev
         self.next = next
         
-class LinkedList:
+class double_LinkedList:
     def __init__(self) -> None:
         self.no = 0
         self.head = None
@@ -26,16 +26,20 @@ class LinkedList:
         cases = self.search(data)
         self.no += 1
         if cases == -1:
-            self.head = self.tail = self.current = Node(data, None, None)
+            self.head = Node(data, None, None)
+            self.tail = Node(data, None, None)
+            self.current = Node(data, None, None)
         # insert at head
         if data < self.head.data:
             ptr = self.head
-            self.head = self.current = Node(data, None, ptr)
+            self.head = Node(data, None, ptr)
+            self.current = Node(data, None, ptr)
             ptr.prev = self.head
         # insert at tail
         elif data >= self.tail.data:
             ptr = self.tail
-            self.tail = self.current = Node(data, ptr, None)
+            self.tail = Node(data, ptr, None)
+            self.current = Node(data, ptr, None)
             ptr.next = self.tail
         # insert at middle
         else:
@@ -49,21 +53,26 @@ class LinkedList:
         cases = self.search(data)
         if cases != 1:
             return
+        print(f"delete {data}")
         self.no -= 1
         ptr = self.current
         # delete only one node
         if self.head == self.tail:
+            print("delete only one node")
             self.head = self.tail = self.current = None
         # delete head
         elif ptr == self.head:
+            print("delete head")
             self.head = self.current = ptr.next
             self.head.prev = None
         # delete tail
         elif ptr == self.tail:
+            print("delete tail")
             self.tail = self.current = ptr.prev
             self.tail.next = None
         # delete middle
         else:
+            print("delete middle")
             ptr.prev.next = ptr.next
             ptr.next.prev = ptr.prev
             self.current = ptr.prev
@@ -74,8 +83,8 @@ class LinkedList:
             return -1
         ptr = self.head
         # error handling - head = tail
-        if ptr.next is None:
-            if ptr.data == data:
+        if self.head == self.tail:
+            if self.head.data == data:
                 return 1
             else:
                 return 0
@@ -88,21 +97,16 @@ class LinkedList:
                 self.current = ptr
                 return 0
             ptr = ptr.next
-        self.current = ptr.prev
+        if ptr is None:
+            self.current = self.tail
+        else:
+            self.current = ptr.prev
         return 0
     
     # clear
     def clear(self) -> None:
         while not self.is_empty():
             self.delete(self.head.data)
-
-    # scan
-    def scan(self) -> None:
-        ptr = self.head
-        while ptr is not None:
-            print(ptr.data, end = ' ')
-            ptr = ptr.next
-        print()
     
     # iterator
     def __iter__(self) -> LinkedListIterator:
@@ -110,13 +114,14 @@ class LinkedList:
     
 class LinkedListIterator:
     def __init__(self, head: Node):
-        self.current = head
+        self.head = head
+        self.current = head.next
         
     def __iter__(self) -> LinkedListIterator:
         return self
     
     def __next__(self) -> Any:
-        if self.current is None:
+        if self.current is self.head:
             raise StopIteration
         else:
             data = self.current.data
