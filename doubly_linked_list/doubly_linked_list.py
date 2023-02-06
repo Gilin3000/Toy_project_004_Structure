@@ -27,23 +27,22 @@ class LinkedList:
         self.no += 1
         if cases == -1:
             self.head = self.tail = self.current = Node(data, None, None)
+        # insert at head
+        if data < self.head.data:
+            ptr = self.head
+            self.head = self.current = Node(data, None, ptr)
+            ptr.prev = self.head
+        # insert at tail
+        elif data >= self.tail.data:
+            ptr = self.tail
+            self.tail = self.current = Node(data, ptr, None)
+            ptr.next = self.tail
+        # insert at middle
         else:
-            # insert at head
-            if self.current == self.head:
-                ptr = self.head
-                self.head = self.current = Node(data, None, ptr)
-                ptr.prev = self.head
-            # insert at tail
-            elif self.current == self.tail:
-                ptr = self.tail
-                self.tail = self.current = Node(data, ptr, None)
-                ptr.next = self.tail
-            # insert at middle
-            else:
-                ptr = self.current
-                self.current = Node(data, ptr, ptr.next)
-                ptr.next.prev = self.current
-                ptr.next = self.current
+            ptr = self.current
+            self.current = Node(data, ptr, ptr.next)
+            ptr.next.prev = self.current
+            ptr.next = self.current
     
     # delete
     def delete(self, data: int) -> None:
@@ -74,6 +73,13 @@ class LinkedList:
         if self.is_empty():
             return -1
         ptr = self.head
+        # error handling - head = tail
+        if ptr.next is None:
+            if ptr.data == data:
+                return 1
+            else:
+                return 0
+        # search from head
         while ptr is not None:
             if ptr.data == data:
                 self.current = ptr
@@ -90,8 +96,8 @@ class LinkedList:
         while not self.is_empty():
             self.delete(self.head.data)
 
-    # print
-    def print(self) -> None:
+    # scan
+    def scan(self) -> None:
         ptr = self.head
         while ptr is not None:
             print(ptr.data, end = ' ')
