@@ -46,6 +46,28 @@ class LinkedList:
                 ptr.next = self.current
     
     # delete
+    def delete(self, data: int) -> None:
+        cases = self.search(data)
+        if cases != 1:
+            return
+        self.no -= 1
+        ptr = self.current
+        # delete only one node
+        if self.head == self.tail:
+            self.head = self.tail = self.current = None
+        # delete head
+        elif ptr == self.head:
+            self.head = self.current = ptr.next
+            self.head.prev = None
+        # delete tail
+        elif ptr == self.tail:
+            self.tail = self.current = ptr.prev
+            self.tail.next = None
+        # delete middle
+        else:
+            ptr.prev.next = ptr.next
+            ptr.next.prev = ptr.prev
+            self.current = ptr.prev
     
     # search
     def search(self, data: int) -> int:
@@ -63,6 +85,17 @@ class LinkedList:
         self.current = ptr.prev
         return 0
     
+    # clear
+    def clear(self) -> None:
+        while not self.is_empty():
+            self.delete(self.head.data)
+
     # print
+    def print(self) -> None:
+        ptr = self.head
+        while ptr is not None:
+            print(ptr.data, end = ' ')
+            ptr = ptr.next
+        print()
     
     # iterator
